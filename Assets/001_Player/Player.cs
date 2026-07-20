@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-   
     void Start()
     {
         
@@ -15,9 +14,31 @@ public class Player : MonoBehaviour
         PlayerCollison();
     }
 
-    private void PlayerMove()
+    void PlayerMove()
     {
+        //x,y,z êÈåæÅ@Å@(x,y,z) = (0,0,0)         
+        Vector3 move = Vector3.zero;
 
+
+        //wasd
+        if (Input.GetKey(KeyCode.W))
+        {
+            move += Vector3.up;
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            move += Vector3.left;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            move += Vector3.down;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            move += Vector3.right;
+        }
+
+        transform.Translate(move * Time.deltaTime);
     }
 
     private void PlayerShot()
