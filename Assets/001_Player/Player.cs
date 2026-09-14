@@ -3,13 +3,15 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     //弾のオブジェクト
-    public GameObject Bulllet;
+    public GameObject Bullet;
     //弾の発射までのインターバル用変数
     private float ShotTimer = 0.0f;
     //現在発射可能か
     [SerializeField] private bool EnableShot = false;
     //チャージショットタイム
     private float ChargeTimer = 0.0f;
+    // プレイヤーがバレットを所持しているかどうか
+    public bool HaveBullet = false;
 
 
     void Start()
@@ -65,7 +67,7 @@ public class Player : MonoBehaviour
         {
             if(ChargeTimer > 0.01f)
             {
-                Instantiate(Bulllet, transform.position, Quaternion.identity);
+                Instantiate(Bullet, transform.position, Quaternion.identity);
             }
             
             ShotTimer = 0.0f;
