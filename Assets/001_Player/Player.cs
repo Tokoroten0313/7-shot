@@ -10,8 +10,13 @@ public class Player : MonoBehaviour
     [SerializeField] private bool EnableShot = false;
     //チャージショットタイム
     private float ChargeTimer = 0.0f;
+
+    //7shotカウント
+    private int ShotCount = 0;
+
     // プレイヤーがバレットを所持しているかどうか
     public bool HaveBullet = false;
+
 
 
     void Start()
@@ -54,27 +59,56 @@ public class Player : MonoBehaviour
 
     private void PlayerShot()
     {
+        //ShotTimerの加算
         ShotTimer += Time.deltaTime;
-        if (Input.GetKey(KeyCode.Space) && EnableShot == false)
+
+        //発射可能にするまでの処理
+        if (EnableShot == false && ShotTimer <= 1.00)
+        {
+            EnableShot = true;
+        }
+
+        if (Input.GetKey(KeyCode.Space))
         {
             ChargeTimer += Time.deltaTime;
-
-
-
-        }
-
-        if (Input.GetKeyUp(KeyCode.Space) && (ShotTimer > 1.0f) )
-        {
-            if(ChargeTimer > 0.01f)
+            //通常弾の処理
+            if (Input.GetKeyUp(KeyCode.Space) && EnableShot == true && ChargeTimer < 3.0)
             {
+
                 Instantiate(Bullet, transform.position, Quaternion.identity);
+
+                if (ChargeTimer > 0.01f)
+                {
+                    Instantiate(Bullet, transform.position, Quaternion.identity);
+                }
+
+                ShotTimer = 0.0f;
+                EnableShot = false;
+                Instantiate(Bullet, transform.position, Quaternion.identity);
+
             }
+            //チャージショット
+            else if (Input.GetKeyUp(KeyCode.Space) && EnableShot == true && ChargeTimer > 3.0)
+            {
+                PlayerShot_c();
+            }
+            //7ショット
+            else if (Input.GetKeyUp(KeyCode.Space) && EnableShot == true && ShotCount == 7)
+            {
+                PlayerShot_7();
+            }
+            //例外
+            else
+            {
+
+            }
+
+        
             
-            ShotTimer = 0.0f;
         }
 
-        PlayerShot_c();
-        PlayerShot_7();
+        
+        
     }
 
     private void PlayerCollison()

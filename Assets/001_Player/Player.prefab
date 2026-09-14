@@ -105,6 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac24d63834cdb2847a58e9348b8f9504, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  Bulllet: {fileID: 5556774735498148815, guid: c55d0bd84c6f0214f94dd48110ed6bec, type: 3}
+  EnableShot: 0
 --- !u!61 &5737525394628999009
 BoxCollider2D:
   m_ObjectHideFlags: 0
