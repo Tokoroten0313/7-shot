@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class DebugManager : MonoBehaviour
 {
+    public GameManager gameManager;
     void Start()
     {
         
@@ -79,22 +80,22 @@ public class DebugManager : MonoBehaviour
 
     private void Player1ScoreAdd()
     {
-        
+        gameManager.Player1Score++;
     }
 
     private void Player1ScoreSub()
     {
-        
+        gameManager.Player1Score--;
     }
 
     private void Player2ScoreAdd()
     {
-        
+        gameManager.Player2Score++;
     }
 
     private void Player2ScoreSub()
     {
-        
+        gameManager.Player2Score--;
     }
 
 }
