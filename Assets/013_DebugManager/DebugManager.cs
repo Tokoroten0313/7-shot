@@ -71,28 +71,28 @@ public class DebugManager : MonoBehaviour
 
     private void ScoreManage()
     {
-        PlayerScoreAdd();
-        PlayerScoreSub();
-        EnemyScoreAdd();
-        EnemyScoreSub();
+        Player1ScoreAdd();
+        Player1ScoreSub();
+        Player2ScoreAdd();
+        Player2ScoreSub();
     }
 
-    private void PlayerScoreAdd()
+    private void Player1ScoreAdd()
     {
         
     }
 
-    private void PlayerScoreSub()
+    private void Player1ScoreSub()
     {
         
     }
 
-    private void EnemyScoreAdd()
+    private void Player2ScoreAdd()
     {
         
     }
 
-    private void EnemyScoreSub()
+    private void Player2ScoreSub()
     {
         
     }

@@ -44,3 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6396b35fd349ca74e927922dc0dce061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnManager
+  DropBullet: {fileID: 6916209899346067050, guid: 1afcce08738b969419fbe3f3737a286c, type: 3}

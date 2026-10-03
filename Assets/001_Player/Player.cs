@@ -18,7 +18,6 @@ public class Player : MonoBehaviour
     public bool HaveBullet = false;
 
 
-
     void Start()
     {
 
@@ -71,40 +70,31 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             ChargeTimer += Time.deltaTime;
+        }
+
+        if ((Input.GetKeyUp(KeyCode.Space)) && (EnableShot == true) && (HaveBullet == true))
+        {
             //通常弾の処理
-            if (Input.GetKeyUp(KeyCode.Space) && EnableShot == true && ChargeTimer < 3.0)
+            if (ChargeTimer < 3.0 && ShotCount != 6)
             {
-
-                Instantiate(Bullet, transform.position, Quaternion.identity);
-
-                if (ChargeTimer > 0.01f)
-                {
-                    Instantiate(Bullet, transform.position, Quaternion.identity);
-                }
-
                 ShotTimer = 0.0f;
                 EnableShot = false;
+                HaveBullet = false;
+                ShotCount++;
                 Instantiate(Bullet, transform.position, Quaternion.identity);
-
             }
-            //チャージショット
-            else if (Input.GetKeyUp(KeyCode.Space) && EnableShot == true && ChargeTimer > 3.0)
+            //チャージショットの処理
+            else if (ChargeTimer > 3.0 && ShotCount != 6)
             {
                 PlayerShot_c();
             }
-            //7ショット
-            else if (Input.GetKeyUp(KeyCode.Space) && EnableShot == true && ShotCount == 7)
+            //7shot
+            else if (ShotCount == 6)
             {
                 PlayerShot_7();
             }
-            //例外
-            else
-            {
+            ChargeTimer = 0.0f;
 
-            }
-
-        
-            
         }
 
         
@@ -118,12 +108,18 @@ public class Player : MonoBehaviour
 
     private void PlayerShot_c()
     {
-
+        ShotTimer = 0.0f;
+        EnableShot = false;
+        HaveBullet = false;
+        ShotCount++;
     }
 
     private void PlayerShot_7()
     {
-
+        ShotTimer = 0.0f;
+        EnableShot = false;
+        HaveBullet = false;
+        ShotCount = 0;
     }
 
     private void PlayerAnimation()

@@ -766,6 +766,7 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+<<<<<<< Updated upstream
 --- !u!1001 &1318305856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -906,6 +907,8 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+=======
+>>>>>>> Stashed changes
 --- !u!1001 &1599700958
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -919,10 +922,11 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 7294157717564719123, guid: faa01b02260c29943b4e06f09eb43535, type: 3}
-      propertyPath: Bulllet
+      propertyPath: Bullet
       value: 
       objectReference: {fileID: 5556774735498148815, guid: c55d0bd84c6f0214f94dd48110ed6bec, type: 3}
     - target: {fileID: 7294157717564719123, guid: faa01b02260c29943b4e06f09eb43535, type: 3}
+<<<<<<< Updated upstream
       propertyPath: EnableShot
       value: 0
       objectReference: {fileID: 0}
@@ -930,6 +934,11 @@ PrefabInstance:
       propertyPath: HaveBullet
       value: 0
       objectReference: {fileID: 0}
+=======
+      propertyPath: Bulllet
+      value: 
+      objectReference: {fileID: 5556774735498148815, guid: c55d0bd84c6f0214f94dd48110ed6bec, type: 3}
+>>>>>>> Stashed changes
     - target: {fileID: 8940724029779079040, guid: faa01b02260c29943b4e06f09eb43535, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.9103703
