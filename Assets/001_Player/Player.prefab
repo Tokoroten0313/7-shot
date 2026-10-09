@@ -108,6 +108,7 @@ MonoBehaviour:
   Bullet: {fileID: 5556774735498148815, guid: c55d0bd84c6f0214f94dd48110ed6bec, type: 3}
   EnableShot: 1
   HaveBullet: 1
+  bullet: {fileID: 7245053728019266230, guid: c55d0bd84c6f0214f94dd48110ed6bec, type: 3}
 --- !u!61 &5737525394628999009
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -17,10 +17,11 @@ public class Player : MonoBehaviour
     // プレイヤーがバレットを所持しているかどうか
     public bool HaveBullet = false;
 
+    public Bullet bullet;
 
     void Start()
     {
-
+        
     }
  
     void Update()
@@ -74,6 +75,12 @@ public class Player : MonoBehaviour
 
         if ((Input.GetKeyUp(KeyCode.Space)) && (EnableShot == true) && (HaveBullet == true))
         {
+            //入力されている移動の角度の取得
+            bullet.PlayerVectorX = Input.GetAxisRaw("Horizontal");
+            bullet.PlayerVectorY = Input.GetAxisRaw("Vertical");
+
+
+
             //通常弾の処理
             if (ChargeTimer < 3.0 && ShotCount != 6)
             {
@@ -81,7 +88,9 @@ public class Player : MonoBehaviour
                 EnableShot = false;
                 HaveBullet = false;
                 ShotCount++;
+                bullet.BulletBoundLimit = 5;
                 Instantiate(Bullet, transform.position, Quaternion.identity);
+                
             }
             //チャージショットの処理
             else if (ChargeTimer > 3.0 && ShotCount != 6)
@@ -112,6 +121,7 @@ public class Player : MonoBehaviour
         EnableShot = false;
         HaveBullet = false;
         ShotCount++;
+        bullet.BulletBoundLimit = 10;
     }
 
     private void PlayerShot_7()
@@ -120,6 +130,7 @@ public class Player : MonoBehaviour
         EnableShot = false;
         HaveBullet = false;
         ShotCount = 0;
+        bullet.BulletBoundLimit = 200;
     }
 
     private void PlayerAnimation()

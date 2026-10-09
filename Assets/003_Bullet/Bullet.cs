@@ -11,10 +11,26 @@ public class Bullet : MonoBehaviour
     // 現在の弾の進行方向
     private Vector3 NowVelocity;
 
+    // 弾のx軸の値
+    public float PlayerVectorX = 3;
+
+    // 弾のy軸の値
+    public float PlayerVectorY = 0;
+
+    //弾の反射回数
+    private int BoundCount = 0;
+
+    //5・10・200
+    public int BulletBoundLimit = 0;
+
+    private int InitBoundLimit = 0;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         bullet = GetComponent<Rigidbody2D>();
+        //弾の反射回数を初期化
+        InitBoundLimit = BulletBoundLimit;
     }
 
     // Update is called once per frame
@@ -30,12 +46,13 @@ public class Bullet : MonoBehaviour
         if (HitWall == false)
         {
             // いずれ八方向分をswichで分岐させる
-            BulletVector = new Vector3(3, 0, 0);
+            BulletVector = new Vector3(PlayerVectorX, PlayerVectorY, 0);
             bullet.linearVelocity = BulletVector;
         }
         // 現在の弾のベクトルを保存
         NowVelocity = bullet.linearVelocity;
     }
+    
 
     private void BulletCollision()
     {
@@ -43,6 +60,14 @@ public class Bullet : MonoBehaviour
     }
 
     private void BulletGoal()
+    {
+        if (BoundCount == InitBoundLimit)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void BulletDestroy()
     {
 
     }
@@ -54,5 +79,6 @@ public class Bullet : MonoBehaviour
         bullet.linearVelocity = Vector3.Reflect(NowVelocity, contactPoint.normal);
 
         HitWall = true;
+        BoundCount++;
     }
 }

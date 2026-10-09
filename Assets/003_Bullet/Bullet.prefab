@@ -106,6 +106,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eed4dc739bc05e41a9a64681e3f045a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
+  PlayerVectorX: 4
+  PlayerVectorY: 7
 --- !u!50 &-5262899682716789323
 Rigidbody2D:
   serializedVersion: 5
