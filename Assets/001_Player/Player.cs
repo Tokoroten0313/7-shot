@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    //定数
+    //弾のチャージタイム
+    private static float CHARGE_TIME = 1;
+
+
+
     //弾のオブジェクト
     public GameObject Bullet;
     //弾の発射までのインターバル用変数
@@ -12,12 +18,16 @@ public class Player : MonoBehaviour
     private float ChargeTimer = 0.0f;
 
     //7shotカウント
-    private int ShotCount = 0;
+    [SerializeField] private int ShotCount = 0;
 
     // プレイヤーがバレットを所持しているかどうか
     public bool HaveBullet = false;
 
+    //弾のオブジェクト取得
     public Bullet bullet;
+
+    
+
 
     void Start()
     {
@@ -76,24 +86,24 @@ public class Player : MonoBehaviour
         if ((Input.GetKeyUp(KeyCode.Space)) && (EnableShot == true) && (HaveBullet == true))
         {
             //入力されている移動の角度の取得
-            bullet.PlayerVectorX = Input.GetAxisRaw("Horizontal");
-            bullet.PlayerVectorY = Input.GetAxisRaw("Vertical");
-
-
+            bullet.PlayerVectorX = Input.GetAxisRaw("Horizontal") ;
+            bullet.PlayerVectorY = Input.GetAxisRaw("Vertical") ;
+            bullet.BulletSpeedMagnification = 3;
 
             //通常弾の処理
-            if (ChargeTimer < 3.0 && ShotCount != 6)
+            if (ChargeTimer < CHARGE_TIME && ShotCount != 6)
             {
+                
                 ShotTimer = 0.0f;
                 EnableShot = false;
                 HaveBullet = false;
                 ShotCount++;
                 bullet.BulletBoundLimit = 5;
-                Instantiate(Bullet, transform.position, Quaternion.identity);
                 
+                Instantiate(Bullet, transform.position, Quaternion.identity);
             }
             //チャージショットの処理
-            else if (ChargeTimer > 3.0 && ShotCount != 6)
+            else if (ChargeTimer > 1.0 && ShotCount != 6)
             {
                 PlayerShot_c();
             }
@@ -117,11 +127,14 @@ public class Player : MonoBehaviour
 
     private void PlayerShot_c()
     {
+        
         ShotTimer = 0.0f;
         EnableShot = false;
         HaveBullet = false;
         ShotCount++;
         bullet.BulletBoundLimit = 10;
+        bullet.BulletSpeedMagnification = 4.5f;
+        Instantiate(Bullet, transform.position, Quaternion.identity);
     }
 
     private void PlayerShot_7()
@@ -131,6 +144,8 @@ public class Player : MonoBehaviour
         HaveBullet = false;
         ShotCount = 0;
         bullet.BulletBoundLimit = 200;
+        bullet.BulletSpeedMagnification = 6.0f;
+        Instantiate(Bullet, transform.position, Quaternion.identity);
     }
 
     private void PlayerAnimation()

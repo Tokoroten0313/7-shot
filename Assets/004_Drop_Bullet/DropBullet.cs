@@ -28,11 +28,15 @@ public class DropBullet : MonoBehaviour
     // プレイヤーとドロップバレットの衝突処理
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // プレイヤーが弾を持っていなければ、ドロップバレットを消す
-        if (playerScript.HaveBullet == false)
+        if (collision.gameObject.CompareTag("Player"))
         {
-            Destroy(gameObject);
-            playerScript.HaveBullet = true;
+            // プレイヤーが弾を持っていなければ、ドロップバレットを消す
+            if (playerScript.HaveBullet == false)
+            {
+                Destroy(gameObject);
+                playerScript.HaveBullet = true;
+            }
         }
+        
     }
 }

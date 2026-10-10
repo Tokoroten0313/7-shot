@@ -2,12 +2,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public float GameTime = 0;
+    public float GameTime { get; private set; }
 
     //Player1のスコア
     public float Player1Score = 0;
     //Player2のスコア
     public float Player2Score = 0;
+
+    //ポーズしているかしていないか？
+    private bool IsPaused = false;
 
     void Start()
     {
@@ -20,6 +23,7 @@ public class GameManager : MonoBehaviour
         GetEnemyScore();
         GetTime();
         Pause();
+        TimeAdd();
     }
 
     private void GetPlayerScore()
@@ -34,7 +38,11 @@ public class GameManager : MonoBehaviour
 
     private void TimeAdd()
     {
-        GameTime += Time.deltaTime;
+        if (GameTime <= 60)
+        {
+            GameTime += Time.deltaTime;
+        }
+        
     }
 
     private void GetTime()

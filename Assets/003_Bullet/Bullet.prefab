@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2378142923268006410}
   m_Layer: 0
   m_Name: Bullet
-  m_TagString: Untagged
+  m_TagString: bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -106,8 +106,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eed4dc739bc05e41a9a64681e3f045a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  PlayerVectorX: 4
-  PlayerVectorY: 7
+  PlayerVectorX: 0
+  PlayerVectorY: 0
+  BulletBoundLimit: 5
+  BulletSpeedMagnification: 3
 --- !u!50 &-5262899682716789323
 Rigidbody2D:
   serializedVersion: 5
