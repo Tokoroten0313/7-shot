@@ -12,6 +12,7 @@ public class DebugManager : MonoBehaviour
     void Update()
     {
         TimeManage();
+
         ScoreManage();
     }
 
@@ -72,10 +73,26 @@ public class DebugManager : MonoBehaviour
 
     private void ScoreManage()
     {
-        Player1ScoreAdd();
-        Player1ScoreSub();
-        Player2ScoreAdd();
-        Player2ScoreSub();
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Player1ScoreAdd();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            Player1ScoreSub();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            Player2ScoreAdd();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            Player2ScoreSub();
+        }
+        
     }
 
     private void Player1ScoreAdd()

@@ -19,11 +19,19 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        GetPlayerScore();
-        GetEnemyScore();
-        GetTime();
-        Pause();
-        TimeAdd();
+        if (!IsPaused)
+        {
+            GetPlayerScore();
+            GetEnemyScore();
+            GetTime();
+            Pause();
+            TimeAdd();
+        }
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            IsPaused = true;
+        }
     }
 
     private void GetPlayerScore()

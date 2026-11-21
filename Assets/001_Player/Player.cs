@@ -5,15 +5,24 @@ public class Player : MonoBehaviour
     //定数
     //弾のチャージタイム
     private static float CHARGE_TIME = 1;
+    //行動制限
+    private static float LIMITPOSX = 8.4f;
+    private static float LIMITPOSY = 4.4f;
+
+    //プレイヤーの速度
+    [SerializeField] private float PlayerSpeed = 2;
 
 
-
+    //以下弾の変数
     //弾のオブジェクト
     public GameObject Bullet;
+
     //弾の発射までのインターバル用変数
     private float ShotTimer = 0.0f;
+
     //現在発射可能か
     [SerializeField] private bool EnableShot = false;
+
     //チャージショットタイム
     private float ChargeTimer = 0.0f;
 
@@ -25,9 +34,6 @@ public class Player : MonoBehaviour
 
     //弾のオブジェクト取得
     public Bullet bullet;
-
-    
-
 
     void Start()
     {
@@ -49,19 +55,32 @@ public class Player : MonoBehaviour
         //wasd
         if (Input.GetKey(KeyCode.W))
         {
-            move += Vector3.up;
+            if (LIMITPOSY > transform.position.y)
+            {
+                move += Vector3.up * PlayerSpeed;
+            }
         }
         if (Input.GetKey(KeyCode.A))
         {
-            move += Vector3.left;
+            if (-LIMITPOSX < transform.position.x)
+            {
+                move += Vector3.left * PlayerSpeed;
+            }
         }
         if (Input.GetKey(KeyCode.S))
         {
-            move += Vector3.down;
+            if (-LIMITPOSY < transform.position.y)
+            {
+                move += Vector3.down * PlayerSpeed;
+            }
         }
         if (Input.GetKey(KeyCode.D))
         {
-            move += Vector3.right;
+            if (LIMITPOSX > transform.position.x)
+            {
+                move += Vector3.right * PlayerSpeed;
+            }
+                
         }
 
         transform.Translate(move * Time.deltaTime);
@@ -73,7 +92,7 @@ public class Player : MonoBehaviour
         ShotTimer += Time.deltaTime;
 
         //発射可能にするまでの処理
-        if (EnableShot == false && ShotTimer <= 1.00)
+        if (EnableShot == false && ShotTimer >= 1.00)
         {
             EnableShot = true;
         }
@@ -152,5 +171,7 @@ public class Player : MonoBehaviour
     {
 
     }
+
+
 
 }

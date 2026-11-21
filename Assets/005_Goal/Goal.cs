@@ -33,7 +33,11 @@ public class Goal : MonoBehaviour
         }
 
         // 衝突したBulletを削除する処理
-        // if (collision.gameObject.CompareTag("Bullet"))のタグ指定でBulletだけ消す分岐にする
-        Destroy(collision.gameObject);
+        //if (collision.gameObject.CompareTag("Bullet"))のタグ指定でBulletだけ消す分岐にする
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            Destroy(collision.gameObject);
+        }
+            
     }
 }
