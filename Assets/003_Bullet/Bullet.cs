@@ -51,12 +51,18 @@ public class Bullet : MonoBehaviour
     {
         if (HitWall == false)
         {
-            //弾の方向を進行方向から取得
-            if((PlayerVectorX == 0) && (PlayerVectorY == 0))
+            // 発射方向が設定されていない場合の補正
+            if (PlayerVectorX == 0 && PlayerVectorY == 0)
             {
                 PlayerVectorX = 1;
             }
-            BulletVector = new Vector3(PlayerVectorX * InitSpeedMagnification, PlayerVectorY * InitSpeedMagnification, 0);
+
+            BulletVector = new Vector3(
+                PlayerVectorX * InitSpeedMagnification,
+                PlayerVectorY * InitSpeedMagnification,
+                0
+            );
+
             bullet.linearVelocity = BulletVector;
         }
         // 現在の弾のベクトルを保存

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Enemy : MonoBehaviour
 {
-    private static float CHARGE_TIME = 1;
+    
 
     //行動制限
     private static float LIMITPOSX_MIN = 0f;
@@ -42,19 +43,11 @@ public class Enemy : MonoBehaviour
     //現在発射可能か
     [SerializeField] private bool EnableShot = false;
 
-    //チャージショットタイム
-    private float ChargeTimer = 0.0f;
-
     //7shotカウント
     [SerializeField] private int ShotCount = 0;
 
     //エネミーがバレットを所持しているかどうか
     public bool HaveBullet = false;
-
-    //弾のオブジェクト取得
-    public Bullet bullet;
-
-    
 
     private enum EnemyState
     {
@@ -64,7 +57,34 @@ public class Enemy : MonoBehaviour
         none
     }
 
-    
+    // 射撃パターン
+    private enum ShotPattern
+    {
+        Player,       // プレイヤーを狙う
+        Goal,         // Goalを直接狙う
+        WallBounce    // 壁に反射させてGoalを狙う
+    }
+
+    // 今回選択された射撃パターン
+    private ShotPattern shotPattern;
+
+    [Header("攻撃パターンの選択確率")]
+    [SerializeField] private float PlayerShotRate = 15f;
+    [SerializeField] private float GoalShotRate = 15f;
+    [SerializeField] private float WallBounceShotRate = 70f;
+
+    [Header("射撃対象")]
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform enemyGoalTransform;
+
+    // 通常弾・チャージ弾の選択確率
+    [Header("射撃種類の選択確率")]
+    [SerializeField] private float NormalShotRate = 70f;
+    [SerializeField] private float ChargeShotRate = 30f;
+
+    [Header("壁反射用")]
+    [SerializeField] private Collider2D topWallCollider;
+    [SerializeField] private Collider2D bottomWallCollider;
 
     void Start()
     {
@@ -100,7 +120,7 @@ public class Enemy : MonoBehaviour
     private void EnemyMove()
     {
         //弾を持っておらず、落ちている弾もない場合
-        if (!HaveBullet && !ExistDropBullet)
+        if (!ExistDropBullet)
         {
             //目的地を変更するタイミング
             targetChangeTimer -= Time.deltaTime;
@@ -148,6 +168,9 @@ public class Enemy : MonoBehaviour
 
     private void EnemyShot()
     {
+        //射撃準備中もランダムに移動
+        EnemyMove();
+        
         //ShotTimerの加算
         ShotTimer += Time.deltaTime;
 
@@ -157,46 +180,155 @@ public class Enemy : MonoBehaviour
             EnableShot = true;
         }
 
-        //ここはenemy用に変更必要
-        if (Input.GetKey(KeyCode.Space))
-        {
-            ChargeTimer += Time.deltaTime;
-        }
-
         //ここもenemy用に変更が必要
-        if ((Input.GetKeyUp(KeyCode.Space)) && (EnableShot == true) && (HaveBullet == true))
+        if (EnableShot == true && HaveBullet == true)
         {
-            //入力されている移動の角度の取得
-            bullet.PlayerVectorX = Input.GetAxisRaw("Horizontal");
-            bullet.PlayerVectorY = Input.GetAxisRaw("Vertical");
-            bullet.BulletSpeedMagnification = 3;
+            //ショットの種類選択
+            SelectShotPattern();
 
-            //通常弾の処理
-            if (ChargeTimer < CHARGE_TIME && ShotCount != 6)
-            {
+            Vector2 shotDirection = CalculateShotDirection();
 
-                ShotTimer = 0.0f;
-                EnableShot = false;
-                HaveBullet = false;
-                ShotCount++;
-                bullet.BulletBoundLimit = 5;
+            // 射撃方向が正常に計算できなかった場合は発射しない
+            if (shotDirection == Vector2.zero)
+            {
+                return;
+            }
 
-                Instantiate(Bullet, transform.position, Quaternion.identity);
-            }
-            //チャージショットの処理
-            else if (ChargeTimer > 1.0 && ShotCount != 6)
+            // 7shotの判定
+            if (ShotCount == 6)
             {
-                EnemyShot_c();
+                EnemyShot_7(shotDirection);
             }
-            //7shot
-            else if (ShotCount == 6)
+            // 通常弾・チャージ弾をランダムに選択
+            else
             {
-                EnemyShot_7();
+                float randomShot = Random.Range(0f,NormalShotRate + ChargeShotRate);
+                //通常弾の処理
+                if (randomShot < NormalShotRate)
+                {
+                    ShotTimer = 0.0f;
+                    EnableShot = false;
+                    HaveBullet = false;
+                    ShotCount++;
+                    Bullet newBullet = CreateBullet(shotDirection);
+                    newBullet.BulletBoundLimit = 5;
+                    newBullet.BulletSpeedMagnification = 3;
+
+                }
+                else
+                {
+                    // チャージ弾
+                    EnemyShot_c(shotDirection);
+                }
             }
-            ChargeTimer = 0.0f;
+
+
+            
+            
 
         }
 
+    }
+
+    private void SelectShotPattern()
+    {
+        //ショットパターンの乱数生成
+        float randomPattern = Random.Range(0, PlayerShotRate + GoalShotRate + WallBounceShotRate);
+
+        if (randomPattern < PlayerShotRate)
+        {
+            shotPattern = ShotPattern.Player;
+        }
+        else if (randomPattern < PlayerShotRate + GoalShotRate)
+        {
+            shotPattern = ShotPattern.Goal;
+        }
+        else
+        {
+            shotPattern = ShotPattern.WallBounce;
+        }
+    }
+
+    // 射撃方向を計算する
+    private Vector2 CalculateShotDirection()
+    {
+        Vector2 targetPosition = Vector2.zero;
+
+        // 選択された射撃パターンによって対象を変更
+        switch (shotPattern)
+        {
+            // Playerを狙う
+            case ShotPattern.Player:
+                if (playerTransform == null) return Vector2.zero;
+
+                targetPosition = playerTransform.position;
+                break;
+
+            // Goalを直接狙う
+            case ShotPattern.Goal:
+                if (enemyGoalTransform == null) return Vector2.zero;
+
+                targetPosition = enemyGoalTransform.position;
+                break;
+
+            // 壁反射は次の段階で実装
+            case ShotPattern.WallBounce:
+                // 上側・下側のどちらの壁を使うかランダムに選択
+                bool useTopWall = Random.Range(0, 2) == 0;
+
+                float wallY;
+
+                if (useTopWall)
+                {
+                    if (topWallCollider == null) return Vector2.zero;
+
+                    // 上側の壁の内側の面
+                    wallY = topWallCollider.bounds.min.y;
+                }
+                else
+                {
+                    if (bottomWallCollider == null) return Vector2.zero;
+
+                    // 下側の壁の内側の面
+                    wallY = bottomWallCollider.bounds.max.y;
+                }
+
+                // Goalを壁に対して鏡像の位置に移動させる
+                Vector2 mirroredGoal = new Vector2(
+                    enemyGoalTransform.position.x,
+                    2f * wallY - enemyGoalTransform.position.y
+                );
+
+                // Enemyから鏡像Goalに向かう方向を計算
+                Vector2 wallBounceDirection =
+                    mirroredGoal - (Vector2)transform.position;
+
+                return wallBounceDirection.normalized;
+        }
+
+        // Enemyから対象までの方向ベクトルを計算
+        Vector2 direction = targetPosition - (Vector2)transform.position;
+
+        // 方向ベクトルを正規化して返す
+        return direction.normalized;
+    }
+
+    //弾の生成
+    private Bullet CreateBullet(Vector2 direction)
+    {
+        GameObject obj = Instantiate(
+            Bullet,
+            transform.position,
+            Quaternion.identity
+        );
+
+        Bullet newBullet = obj.GetComponent<Bullet>();
+
+        //発射方向の設定
+        newBullet.PlayerVectorX = direction.x;
+        newBullet.PlayerVectorY = direction.y;
+
+        return newBullet;
     }
 
     private void EnemyCollision()
@@ -204,26 +336,30 @@ public class Enemy : MonoBehaviour
         EnemyAnimation();
     }
 
-    private void EnemyShot_c()
+    //チャージショット
+    private void EnemyShot_c(Vector2 direction)
     {
         ShotTimer = 0.0f;
         EnableShot = false;
         HaveBullet = false;
         ShotCount++;
-        bullet.BulletBoundLimit = 10;
-        bullet.BulletSpeedMagnification = 4.5f;
-        Instantiate(Bullet, transform.position, Quaternion.identity);
+        Bullet newBullet = CreateBullet(direction);
+        newBullet.BulletBoundLimit = 10;
+        newBullet.BulletSpeedMagnification = 4.5f;
+        
     }
 
-    private void EnemyShot_7()
+    //7ショット
+    private void EnemyShot_7(Vector2 direction)
     {
         ShotTimer = 0.0f;
         EnableShot = false;
         HaveBullet = false;
         ShotCount = 0;
-        bullet.BulletBoundLimit = 200;
-        bullet.BulletSpeedMagnification = 6.0f;
-        Instantiate(Bullet, transform.position, Quaternion.identity);
+        Bullet newBullet = CreateBullet(direction);
+        newBullet.BulletBoundLimit = 200;
+        newBullet.BulletSpeedMagnification = 6.0f;
+        
     }
 
     private DropBullet FindNearestBullet(List<DropBullet> bullets)
@@ -295,6 +431,6 @@ public class Enemy : MonoBehaviour
 
     private void EnemyAnimation()
     {
-
+        
     }
 }

@@ -13,7 +13,7 @@ public class DropBullet : MonoBehaviour
         enemyScript = GameObject.Find("Enemy").GetComponent<Enemy>();
 
         //リスト取得のため
-        spawnManager = FindFirstObjectByType<SpawnManager>();
+        spawnManager = FindAnyObjectByType<SpawnManager>();
     }
 
     void Update()
